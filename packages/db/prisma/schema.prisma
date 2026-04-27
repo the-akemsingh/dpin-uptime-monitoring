@@ -16,12 +16,14 @@ model User {
   id       String    @id @default(uuid())
   email    String    @unique
   websites Website[]
+  name     String
+  googleId String    @unique
 }
 
 model Website {
   id     String        @id @default(uuid())
   url    String
-  userId String        @unique
+  userId String
   user   User          @relation(fields: [userId], references: [id])
   ticks  WebsiteTick[]
 }
@@ -30,7 +32,7 @@ model WebsiteTick {
   id          String        @id @default(uuid())
   time        DateTime
   status      WebsiteStatus
-  latency     String
+  latency     Int
   websiteId   String
   website     Website       @relation(fields: [websiteId], references: [id])
   validatorId String
@@ -38,11 +40,12 @@ model WebsiteTick {
 }
 
 model Validator {
-  id           String        @id @default(uuid())
-  publicKey    String        @unique
-  location     String
-  ip           String
-  websiteTicks WebsiteTick[]
+  id            String        @id @default(uuid())
+  publicKey     String        @unique
+  location      String
+  ip            String
+  websiteTicks  WebsiteTick[]
+  pendingPayout Int
 }
 
 enum WebsiteStatus {
