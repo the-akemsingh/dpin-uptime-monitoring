@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { DashboardLayout } from "../components/dashboard/DashboardLayout";
+import { WebsiteCard } from "../components/dashboard/WebsiteCard";
 
 type Tick = {
   id: string;
@@ -180,84 +182,78 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-zinc-950 px-4 py-8 text-zinc-100">
-      <div className="mx-auto w-full max-w-4xl rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-xl font-semibold">Your Websites</h2>
+    <DashboardLayout>
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-zinc-800 pb-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-white">Your Websites</h2>
+          <p className="mt-1 text-sm text-zinc-400">Monitor your web properties in real-time.</p>
+        </div>
 
-          {token ? (
-            <div className="flex w-full gap-2 md:w-auto">
+        {token ? (
+          <div className="flex w-full gap-3 md:w-auto relative group">
+            <div className="absolute -inset-0.5 bg-linear-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-500"></div>
+            <div className="relative flex w-full gap-2 rounded-xl bg-[#0a0a0a] p-1 border border-zinc-800">
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm outline-none placeholder:text-zinc-500 focus:border-zinc-500 md:w-80"
+                className="w-full rounded-lg border-0 bg-transparent px-4 py-2.5 text-sm text-white outline-none placeholder:text-zinc-500 md:w-80 focus:bg-[#111]"
               />
               <button
                 type="button"
                 onClick={handleAddWebsite}
                 disabled={isSubmitting || !url.trim()}
-                className="rounded-md bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? "Adding..." : "Add Website"}
               </button>
             </div>
-          ) : null}
-        </div>
-
-        {!token ? (
-          <p className="rounded-md border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
-            Please login from the navbar to view and manage your websites.
-          </p>
-        ) : isLoading ? (
-          <p className="text-sm text-zinc-300">Loading websites...</p>
-        ) : websites.length === 0 ? (
-          <p className="rounded-md border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
-            No websites yet. Add your first website above.
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {websites.map((website) => (
-              (() => {
-                const statusBuckets = buildWebsiteStatusBuckets(website.ticks || []);
-
-                return (
-                  <div
-                    key={website.id}
-                    className="rounded-md border border-zinc-800 bg-zinc-950 px-4 py-3"
-                  >
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <p className="truncate pr-3 text-sm text-zinc-100">{website.url}</p>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteWebsite(website.id)}
-                        className="rounded-md border border-red-500 px-3 py-1 text-sm text-red-300 hover:bg-red-500/10"
-                      >
-                        Delete
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {statusBuckets.map((status, index) => (
-                        <div
-                          key={`${website.id}-${index}`}
-                          className={`h-2.5 w-full rounded ${getBucketColorClass(status)}`}
-                          title={`Window ${index + 1}: ${status}`}
-                        />
-                      ))}
-                    </div>
-
-                    <p className="mt-2 text-xs text-zinc-400">
-                      Last 30 minutes
-                    </p>
-                  </div>
-                );
-              })()
-            ))}
           </div>
-        )}
+        ) : null}
       </div>
-    </main>
+
+      {!token ? (
+        <div className="rounded-2xl border border-dashed border-zinc-800 bg-[#0a0a0a] p-12 text-center text-zinc-400 shadow-inner">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#111] border border-zinc-800">
+            <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
+          <h3 className="mt-2 text-lg font-semibold text-white">Sign in required</h3>
+          <p className="mt-1">Please login from the navbar to view and manage your websites.</p>
+        </div>
+      ) : isLoading ? (
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-800 border-t-blue-500"></div>
+          <p className="mt-4 text-sm font-medium text-zinc-500">Loading your websites...</p>
+        </div>
+      ) : websites.length === 0 ? (
+        <div className="relative rounded-2xl border border-zinc-800 bg-[#111] p-12 text-center shadow-lg">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 shadow-sm">
+            <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="mt-4 text-xl font-bold text-white">No websites added yet</h3>
+          <p className="mt-2 text-zinc-400">Get started by adding your first website above to begin monitoring.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+          {websites.map((website) => {
+            const statusBuckets = buildWebsiteStatusBuckets(website.ticks || []);
+            return (
+              <WebsiteCard
+                key={website.id}
+                id={website.id}
+                url={website.url}
+                statusBuckets={statusBuckets}
+                onDelete={handleDeleteWebsite}
+              />
+            );
+          })}
+        </div>
+      )}
+    </DashboardLayout>
   );
 }
