@@ -53,7 +53,8 @@ Bun.serve({
   websocket: {
     async message(ws: ServerWebSocket, message: string) {
       const data: IncomingMessage = JSON.parse(message);
-      console.log(data);
+      console.log("message rec");
+      console.log("message - ", data);
       if (data.type === "signup") {
         const isLegit = verifyMessage(
           `Signup request for ${data.data.callbackId} - ${data.data.publicKey}`,
@@ -64,16 +65,22 @@ Bun.serve({
           ws.send(
             JSON.stringify({
               type: "signup",
-              message: ` Verification failed for public key ${data.data.publicKey}`,
-              success: false,
+              data: {
+                callbackId: data.data.callbackId,
+                validatorId: "",
+              },
             }),
           );
+          return;
         }
         await SignUpHandler(ws, data.data);
       } else if (data.type === "validate") {
         CALLBACKS[data.data.callbackId](data);
         delete CALLBACKS[data.data.callbackId];
       }
+    },
+    open(ws: ServerWebSocket) {
+      console.log("a validator connected");
     },
     close(ws: ServerWebSocket) {
       AVAILABLE_VALIDATORS.splice(
@@ -84,7 +91,7 @@ Bun.serve({
   },
 });
 
-const verifyMessage = async (
+const verifyMessage = (
   message: string,
   signedMessage: string,
   publicKey: string,
@@ -119,13 +126,26 @@ const SignUpHandler = async (
       validator: ws,
       validatorId: isValidatorExists.id,
     });
+    console.log("a user signed up")
     ws.send(
       JSON.stringify({
         type: "signup",
-        validatorId: isValidatorExists.id,
-        success: true,
+        data: {
+          callbackId: data.callbackId,
+          validatorId: isValidatorExists.id,
+          publicKey: data.publicKey,
+          ip: data.ip,
+          location: data.location,
+          signedMessage: data.signedMessage,
+        },
       }),
     );
+    AVAILABLE_VALIDATORS.push({
+      publicKey: isValidatorExists.publicKey,
+      validator: ws,
+      validatorId: isValidatorExists.id,
+    });
+    return;
   }
   const newValidator = await prismaClient.validator.create({
     data: {
@@ -136,6 +156,8 @@ const SignUpHandler = async (
     },
   });
 
+  console.log("a new user created")
+
   AVAILABLE_VALIDATORS.push({
     publicKey: newValidator.publicKey,
     validator: ws,
@@ -145,17 +167,26 @@ const SignUpHandler = async (
   ws.send(
     JSON.stringify({
       type: "signup",
-      validatorId: newValidator.id,
-      success: true,
+      data: {
+        callbackId: data.callbackId,
+        validatorId: newValidator.id,
+        publicKey: data.publicKey,
+        ip: data.ip,
+        location: data.location,
+        signedMessage: data.signedMessage,
+      },
     }),
   );
 };
 
 setInterval(async () => {
   const allWebsites = await prismaClient.website.findMany();
+  console.log("all websites fetched",JSON.stringify(allWebsites))
   AVAILABLE_VALIDATORS.forEach((validator) => {
+    console.log("sending this validator website - ",validator.validatorId)
     allWebsites.forEach((website) => {
-      const callbackId = randomUUIDv7();
+      console.log(website.url)
+      const callbackId = crypto.randomUUID();
       validator.validator.send(
         JSON.stringify({
           type: "validate",
@@ -168,13 +199,13 @@ setInterval(async () => {
       );
       CALLBACKS[callbackId] = async (data: IncomingMessage) => {
         if (data.type === "validate") {
-          const { status, latency, signedMessage, validatorId, websiteId } =
-            data.data;
+          const { status, latency, signedMessage, validatorId } = data.data;
 
+          console.log(`reponse rec for website`,website.url)
           const verified = await verifyMessage(
             `Replying to validation request ${callbackId}`,
-            validator.publicKey,
             signedMessage,
+            validator.publicKey,
           );
           if (!verified) {
             return;
@@ -186,7 +217,7 @@ setInterval(async () => {
                 status,
                 validatorId,
                 time: new Date(),
-                websiteId
+                websiteId: website.id,
               },
             });
 
@@ -199,6 +230,7 @@ setInterval(async () => {
               },
             });
           });
+          console.log("tick saved for website",website.url);
         }
       };
     });
