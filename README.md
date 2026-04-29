@@ -1,159 +1,32 @@
-# Turborepo starter
+# DePIN Uptime Monitoring Platform
 
-This Turborepo starter is maintained by the Turborepo core team.
+A decentralized physical infrastructure network (DePIN) for distributed uptime monitoring. This platform allows users to monitor the availability and performance of their websites through a globally distributed network of validator nodes.
 
-## Using this example
+## 📖 What it is
 
-Run the following command:
+The DPin Uptime project is a robust, decentralized alternative to traditional uptime monitoring tools (like Pingdom or Uptime Robot). Instead of relying on centralized servers, it uses a network of independent "validators" to perform continuous health checks (`WebsiteTick`) on registered target URLs. This ensures high reliability, bypasses regional censorship, and provides true global latency metrics.
 
-```sh
-npx create-turbo@latest
-```
+## ⚙️ Architecture
 
-## What's inside?
+This project is a monorepo managed by [Turborepo](https://turborepo.org/) and built primarily with TypeScript, Next.js, and Prisma.
 
-This Turborepo includes the following packages/apps:
+### Apps
 
-### Apps and Packages
+- **`apps/web`**: The main user-facing dashboard built with Next.js. Users can log in (via Google Auth), add websites to monitor, and view uptime statistics & analytics.
+- **`apps/api`**: The core backend API that serves the frontend, handles user authentication, and orchestrates database interactions.
+- **`apps/hub`**: The central coordinator service. It manages the queue of websites that need to be monitored and distributes these monitoring tasks to the validator network.
+- **`apps/validator`**: The worker node (daemon) application. Anyone can run a validator to join the network. It receives tasks from the Hub, performs the actual HTTP ping/checks to the target websites, and reports the results back.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Packages
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- **`packages/db`**: The unified Prisma database schema and generated client. Contains core models: `User`, `Website`, `Validator`, and `WebsiteTick`.
+- **`packages/ui`**: Shared React components used across the platform.
+- **`packages/eslint-config` & `packages/typescript-config`**: Shared linting and TS configurations to maintain code quality across all apps.
 
-### Utilities
+## 🚀 How it Works
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo build
-bun dlx turbo build
-bun exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+1. **Registration**: A user logs into the `web` dashboard and adds a new `Website` to be monitored.
+2. **Coordination**: The `hub` service periodically fetches active websites from the database and batches them into monitoring tasks.
+3. **Execution**: Independent `validator` nodes pull these tasks, make the necessary HTTP requests to the target websites, and measure the response time and status code.
+4. **Aggregation**: The validators push the results (`WebsiteTick` data) back to the system. 
+5. **Reporting**: The `api` aggregates these ticks to calculate uptime percentages, average latencies, and payout states (`pending_payout`) for validators, which are then displayed on the user's `web` dashboard.
