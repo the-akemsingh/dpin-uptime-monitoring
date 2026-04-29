@@ -1,19 +1,20 @@
-import { randomUUIDv7, type ServerWebSocket } from "bun";
+import { type ServerWebSocket } from "bun";
 import { prismaClient } from "db/client";
 import { PublicKey } from "@solana/web3.js";
 import nacl from "tweetnacl";
 import nacl_util from "tweetnacl-util";
 
-export type IncomingMessage =
+export type IncomingMessageHub =
   | {
       type: "signup";
-      data: IncomingSignUpMessage;
+      data: ISignUpMessageRequest;
     }
   | {
       type: "validate";
-      data: IncomingValidationMessage;
+      data: IValidationRequestResponse;
     };
-interface IncomingSignUpMessage {
+
+export interface ISignUpMessageRequest {
   ip: string;
   location: string;
   publicKey: string;
@@ -21,17 +22,16 @@ interface IncomingSignUpMessage {
   signedMessage: string;
 }
 
-interface IncomingValidationMessage {
+export interface IValidationRequestResponse {
   status: "Good" | "Bad";
   latency: number;
-  websiteId: string;
   callbackId: string;
   signedMessage: string;
   validatorId: string;
 }
 
 const CALLBACKS: {
-  [callbackId: string]: (data: IncomingMessage) => void;
+  [callbackId: string]: (data: IncomingMessageHub) => void;
 } = {};
 
 const AVAILABLE_VALIDATORS: {
@@ -52,9 +52,7 @@ Bun.serve({
   port: 3001,
   websocket: {
     async message(ws: ServerWebSocket, message: string) {
-      const data: IncomingMessage = JSON.parse(message);
-      console.log("message rec");
-      console.log("message - ", data);
+      const data: IncomingMessageHub = JSON.parse(message);
       if (data.type === "signup") {
         const isLegit = verifyMessage(
           `Signup request for ${data.data.callbackId} - ${data.data.publicKey}`,
@@ -113,7 +111,7 @@ const verifyMessage = (
 
 const SignUpHandler = async (
   ws: ServerWebSocket,
-  data: IncomingSignUpMessage,
+  data: ISignUpMessageRequest,
 ) => {
   const isValidatorExists = await prismaClient.validator.findUnique({
     where: {
@@ -126,17 +124,12 @@ const SignUpHandler = async (
       validator: ws,
       validatorId: isValidatorExists.id,
     });
-    console.log("a user signed up")
     ws.send(
       JSON.stringify({
         type: "signup",
         data: {
           callbackId: data.callbackId,
           validatorId: isValidatorExists.id,
-          publicKey: data.publicKey,
-          ip: data.ip,
-          location: data.location,
-          signedMessage: data.signedMessage,
         },
       }),
     );
@@ -155,8 +148,6 @@ const SignUpHandler = async (
       pendingPayout: 0,
     },
   });
-
-  console.log("a new user created")
 
   AVAILABLE_VALIDATORS.push({
     publicKey: newValidator.publicKey,
@@ -181,11 +172,8 @@ const SignUpHandler = async (
 
 setInterval(async () => {
   const allWebsites = await prismaClient.website.findMany();
-  console.log("all websites fetched",JSON.stringify(allWebsites))
   AVAILABLE_VALIDATORS.forEach((validator) => {
-    console.log("sending this validator website - ",validator.validatorId)
     allWebsites.forEach((website) => {
-      console.log(website.url)
       const callbackId = crypto.randomUUID();
       validator.validator.send(
         JSON.stringify({
@@ -193,16 +181,14 @@ setInterval(async () => {
           data: {
             callbackId,
             websiteUrl: website.url,
-            websiteId: website.id,
           },
         }),
       );
-      CALLBACKS[callbackId] = async (data: IncomingMessage) => {
+      CALLBACKS[callbackId] = async (data: IncomingMessageHub) => {
         if (data.type === "validate") {
           const { status, latency, signedMessage, validatorId } = data.data;
 
-          console.log(`reponse rec for website`,website.url)
-          const verified = await verifyMessage(
+          const verified = verifyMessage(
             `Replying to validation request ${callbackId}`,
             signedMessage,
             validator.publicKey,
@@ -230,7 +216,6 @@ setInterval(async () => {
               },
             });
           });
-          console.log("tick saved for website",website.url);
         }
       };
     });

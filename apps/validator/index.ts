@@ -3,31 +3,24 @@ import nacl from "tweetnacl";
 import nacl_util from "tweetnacl-util";
 import "dotenv/config";
 
-interface OutgoingSignUpMessage {
-  publicKey: string;
-  ip: string;
-  location: string;
-  callbackId: string;
-  signedMessage: string;
+export interface ISignUpRequestResponse {
   validatorId: string;
-}
-interface OutgoingValidateMessage {
-  status: "Good" | "Bad";
-  latency: number;
   callbackId: string;
-  signedMessage: string;
-  validatorId: string;
-  websiteUrl: string;
 }
 
-type OutgoingMessage =
-  | { type: "signup"; data: OutgoingSignUpMessage }
-  | { type: "validate"; data: OutgoingValidateMessage };
+export interface IValidationRequest {
+  callbackId:string;
+  websiteUrl:string;
+}
+
+type IncomingMessageValidator =
+  | { type: "signup"; data: ISignUpRequestResponse }
+  | { type: "validate"; data: IValidationRequest };
 
 let validatorId: string | null = null;
 
 const CALLBACKS: {
-  [callbackId: string]: (data: OutgoingSignUpMessage) => void;
+  [callbackId: string]: (data: ISignUpRequestResponse) => void;
 } = {};
 
 async function main() {
@@ -38,17 +31,11 @@ async function main() {
   const ws = new WebSocket(process.env.WS_URL as string);
 
   ws.onmessage = async (event) => {
-    const message: OutgoingMessage = JSON.parse(event.data);
+    const message: IncomingMessageValidator = JSON.parse(event.data);
 
     if (message.type === "signup") {
-      // if (CALLBACKS[message.data.callbackId]) {
-        CALLBACKS[message.data.callbackId](message.data);
-        delete CALLBACKS[message.data.callbackId];
-      // } else {
-      //   console.error(
-      //     `No callback found for callbackId: ${message.data.callbackId}`,
-      //   );
-      // }
+      CALLBACKS[message.data.callbackId](message.data);
+      delete CALLBACKS[message.data.callbackId];
     } else if (message.type === "validate") {
       const { callbackId, websiteUrl } = message.data;
       ValidateWebsiteHandler(websiteUrl, callbackId, ws, keyPair);
@@ -56,7 +43,7 @@ async function main() {
   };
   ws.onopen = async () => {
     const callbackId = crypto.randomUUID();
-    CALLBACKS[callbackId] = (data: OutgoingSignUpMessage) => {
+    CALLBACKS[callbackId] = (data: ISignUpRequestResponse) => {
       validatorId = data.validatorId;
     };
 
@@ -68,11 +55,11 @@ async function main() {
       JSON.stringify({
         type: "signup",
         data: {
-          callbackId,
-          signedMessage,
-          publicKey: keyPair.publicKey,
           ip: "0.0.0.0",
           location: "chd",
+          publicKey: keyPair.publicKey,
+          callbackId,
+          signedMessage,
         },
       }),
     );
@@ -105,7 +92,6 @@ async function ValidateWebsiteHandler(
           signedMessage,
           callbackId,
           validatorId,
-          websiteUrl,
         },
       }),
     );
