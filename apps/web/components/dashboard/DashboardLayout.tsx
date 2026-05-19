@@ -7,10 +7,11 @@ import { Footer } from "./Footer";
 import Navbar from "../ui/Navbar";
 
 interface DashboardLayoutProps {
-    children: ReactNode;
+    children?: ReactNode;
+    isLoggedIn?: boolean;
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, isLoggedIn = false }: DashboardLayoutProps) {
     return (
         <main className="relative min-h-screen bg-[#0a0a0a] text-zinc-300 font-sans selection:bg-blue-500/30 selection:text-blue-200">
             {/* Grid Pattern Background */}
@@ -20,20 +21,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
                 <Navbar />
 
-                <HeroSection />
-
-                <FeaturesGrid />
+                {!isLoggedIn && (
+                    <>
+                        <HeroSection />
+                        <FeaturesGrid />
+                    </>
+                )}
 
                 {/* User's Application Dashboard Logic */}
-                <div className="my-20 w-full relative">
-                    <div className="absolute -inset-1 rounded-3xl bg-linear-to-r from-blue-500/10 to-purple-500/10 blur-xl opacity-50"></div>
-                    <div className="relative rounded-2xl border border-zinc-800/60 bg-[#111] p-8 shadow-2xl backdrop-blur-xl">
-                        {children}
+                {isLoggedIn && children && (
+                    <div className="pt-32 w-full min-h-screen relative">
+                        {/* <div className="absolute -inset-1 rounded-3xl bg-linear-to-r from-blue-500/10 to-purple-500/10 blur-xl opacity-50"></div> */}
+                        <div className="relative rounded-2xl border border-zinc-800/60 bg-[#111] p-8 shadow-2xl backdrop-blur-xl">
+                            {children}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* <Integrations /> */}
-                <CtaSection />
+                {!isLoggedIn && <CtaSection />}
             </div>
             <Footer />
         </main>

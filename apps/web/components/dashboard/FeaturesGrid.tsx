@@ -84,9 +84,6 @@ export function FeaturesGrid() {
           <p className="text-sm leading-relaxed text-zinc-400 mb-6">
             Granular performance data broken down by region, node provider, and connection phase.
           </p>
-          <a href="#" className="font-semibold text-zinc-300 hover:text-white transition-colors text-sm">
-            View Sample Dashboard &rarr;
-          </a>
         </div>
         
         <div className="flex flex-col justify-center">

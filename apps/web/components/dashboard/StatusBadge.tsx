@@ -5,7 +5,7 @@ export function StatusBadge() {
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"></span>
         <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
       </span>
-      NETWORK STATUS: 10,432 NODES ACTIVE
+      LIVE INDICATOR FOR YOUR WEBSITES
     </div>
   );
 }
