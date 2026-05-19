@@ -70,26 +70,18 @@ const buildWebsiteStatusBuckets = (ticks: Tick[]): BucketStatus[] => {
   return buckets;
 };
 
-const getBucketColorClass = (status: BucketStatus) => {
-  if (status === "bad") {
-    return "bg-red-500";
-  }
-  if (status === "good") {
-    return "bg-emerald-500";
-  }
-  return "bg-zinc-600";
-};
-
-
 export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const [websites, setWebsites] = useState<Website[]>([]);
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
-  const fetchWebsites = useCallback(async (activeToken: string) => {
-    setIsLoading(true);
+  const fetchWebsites = useCallback(async (activeToken: string, showLoader = false) => {
+    if (showLoader) {
+      setIsLoading(true);
+    }
     try {
       const response = await fetch("http://localhost:8080/api/v1/websites", {
         headers: {
@@ -111,7 +103,10 @@ export default function Home() {
       const data = (await response.json()) as Website[];
       setWebsites(data);
     } finally {
-      setIsLoading(false);
+      if (showLoader) {
+        setIsLoading(false);
+      }
+      setHasLoadedOnce(true);
     }
   }, []);
 
@@ -121,7 +116,7 @@ export default function Home() {
       setToken(storedToken);
 
       if (storedToken) {
-        fetchWebsites(storedToken);
+        fetchWebsites(storedToken, !hasLoadedOnce);
       } else {
         setWebsites([]);
       }
@@ -130,10 +125,18 @@ export default function Home() {
     syncAuthState();
     window.addEventListener("auth-changed", syncAuthState);
 
+    const intervalId = window.setInterval(() => {
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        fetchWebsites(storedToken, false);
+      }
+    }, 60_000);
+
     return () => {
       window.removeEventListener("auth-changed", syncAuthState);
+      window.clearInterval(intervalId);
     };
-  }, [fetchWebsites]);
+  }, [fetchWebsites, hasLoadedOnce]);
 
   const handleAddWebsite = async () => {
     if (!token || !url.trim()) {
@@ -156,7 +159,7 @@ export default function Home() {
       }
 
       setUrl("");
-      await fetchWebsites(token);
+      await fetchWebsites(token, false);
     } finally {
       setIsSubmitting(false);
     }
@@ -182,8 +185,8 @@ export default function Home() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-zinc-800 pb-6">
+    <DashboardLayout isLoggedIn={!!token}>
+      <div className=" flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-zinc-800 pb-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-white">Your Websites</h2>
           <p className="mt-1 text-sm text-zinc-400">Monitor your web properties in real-time.</p>

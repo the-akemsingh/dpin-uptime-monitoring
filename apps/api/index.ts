@@ -15,11 +15,22 @@ app.get("/api/v1/health", async (req, res) => {
 
 app.get("/api/v1/websites", authentication, async (req, res) => {
   const userId = req.userId;
+  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
   const websites = await prismaClient.website.findMany({
     where: {
       userId,
     },
-    select: { id: true, url: true, ticks: true },
+    select: {
+      id: true,
+      url: true,
+      ticks: {
+        where: {
+          time: {
+            gte: thirtyMinutesAgo,
+          },
+        },
+      },
+    },
   });
   res.status(200).json(websites);
 });
@@ -53,6 +64,60 @@ app.delete("/api/v1/website/:id", authentication, async (req, res) => {
   }
 
   res.status(200).json({ message: "website deleted successfuly" });
+});
+
+app.get("/api/v1/website/:id/latency", authentication, async (req, res) => {
+  const websiteId = req.params.id as string;
+  const userId = req.userId as string;
+
+  const website = await prismaClient.website.findFirst({
+    where: { id: websiteId, userId },
+  });
+
+  if (!website) {
+    res.status(404).json({ message: "website not found" });
+    return;
+  }
+
+  // Get only the most recent ticks equal to the total validator count
+  const validatorCount = await prismaClient.validator.count();
+  const ticks = await prismaClient.websiteTick.findMany({
+    where: {
+      websiteId,
+    },
+    orderBy: {
+      time: "desc",
+    },
+    take: validatorCount,
+    include: {
+      validator: true,
+    },
+  });
+
+  const regionalData: Record<string, { latencies: number[], statuses: string[] }> = {};
+  for (const tick of ticks) {
+    const region = tick.validator.location;
+    if (!regionalData[region]) {
+      regionalData[region] = { latencies: [], statuses: [] };
+    }
+    regionalData[region].latencies.push(tick.latency);
+    regionalData[region].statuses.push(tick.status);
+  }
+
+  const result = Object.entries(regionalData).map(([region, data]) => {
+    const minLatency = Math.min(...data.latencies);
+    
+    const goodCount = data.statuses.filter(s => s === "Good" || s.toLowerCase() === "up").length;
+    const isUp = goodCount >= data.statuses.length / 2;
+
+    return {
+      region,
+      latency: minLatency,
+      status: isUp ? "UP" : "DOWN"
+    };
+  });
+
+  res.status(200).json(result);
 });
 
 app.post("/api/v1/auth/google", async (req, res) => {
