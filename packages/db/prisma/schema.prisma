@@ -37,6 +37,7 @@ model WebsiteTick {
   website     Website       @relation(fields: [websiteId], references: [id])
   validatorId String
   validator   Validator     @relation(fields: [validatorId], references: [id])
+  createdAt   DateTime      @default(now())
 }
 
 model Validator {
