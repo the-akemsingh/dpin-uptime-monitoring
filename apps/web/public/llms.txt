@@ -1,0 +1,14 @@
+# Pingsy
+
+> Real-time website uptime monitoring. Pingsy monitors your websites 24/7 and alerts you instantly when downtime is detected.
+
+## Key Features
+
+- **Decentralized Uptime Monitoring:** Distributed validator nodes verify website status.
+- **Real-Time Dashboards:** Clean interface to track latencies and check histories.
+- **Instant Alerts:** Get notified the moment your site goes down.
+- **Simple Setup:** Enter your URL and monitor within seconds.
+
+## Main Pages
+
+- [Landing Page & Dashboard](https://pingsy.akemnoorsingh.xyz): View current website statuses, latencies, and add new URLs for monitoring.

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import GoogleSignupButton from "./LoginButton";
+import ThemeToggle from "./ThemeToggle";
 
 type LoggedInUser = {
     id: string;
@@ -58,35 +59,36 @@ export default function Navbar() {
 
     return (
         <header className="fixed inset-x-0 top-4 z-50 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto flex h-16 w-full items-center justify-between rounded-2xl border border-white/10 bg-[#0a0a0a]/40 px-5 backdrop-blur-xl shadow-2xl">
+            <div className="mx-auto flex h-16 w-full items-center justify-between rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-[#0a0a0a]/40 px-5 backdrop-blur-xl shadow-lg dark:shadow-2xl transition-colors duration-300">
                 <div className="flex items-center gap-2">
                     <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-3H9v3H7v-8h10v8h-2v-3h-2v3h-2z" />
                     </svg>
-                    <h1 className="text-lg font-bold text-white tracking-tight">DPIN Uptime</h1>
+                    <h1 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">DPIN Uptime</h1>
                 </div>
 
                 {user ? (
                     <div ref={menuRef} className="relative flex items-center gap-3">
+                        <ThemeToggle />
                         <button
                             type="button"
                             onClick={() => setShowMenu((prev) => !prev)}
-                            className="rounded-full ring-2 cursor-pointer ring-transparent transition-all hover:ring-zinc-700"
+                            className="rounded-full ring-2 cursor-pointer ring-transparent transition-all hover:ring-zinc-300 dark:hover:ring-zinc-700"
                             aria-label="Open user menu"
                         >
-                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-zinc-300">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-800 text-sm font-medium text-zinc-600 dark:text-zinc-300 transition-colors duration-300">
                                 {(user.name || "U").charAt(0).toUpperCase()}
                             </div>
                         </button>
 
                         {showMenu ? (
-                            <div className="absolute flex flex-col right-0 top-12 z-20 min-w-32 rounded-md border border-zinc-800 bg-[#111] p-1 shadow-xl">
-                                <span className="w-full rounded px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">{user.name}</span>
-                                <span className="w-full rounded px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">{user.email}</span>
+                            <div className="absolute flex flex-col right-0 top-12 z-20 min-w-32 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#111] p-1 shadow-xl transition-colors duration-300">
+                                <span className="w-full rounded px-3 py-2 text-left text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors">{user.name}</span>
+                                <span className="w-full rounded px-3 py-2 text-left text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors">{user.email}</span>
                                 <button
                                     type="button"
                                     onClick={handleLogout}
-                                    className="w-full rounded px-3 py-2 text-left text-sm text-red-400 transition-colors hover:bg-zinc-800  cursor-pointer"
+                                    className="w-full rounded px-3 py-2 text-left text-sm text-red-500 dark:text-red-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
                                 >
                                     Logout
                                 </button>
@@ -94,7 +96,8 @@ export default function Navbar() {
                         ) : null}
                     </div>
                 ) : (
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <ThemeToggle />
                         <GoogleSignupButton onLoginSuccess={handleLoginSuccess} />
                     </div>
                 )}

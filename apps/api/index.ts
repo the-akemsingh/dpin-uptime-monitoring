@@ -79,21 +79,31 @@ app.get("/api/v1/website/:id/latency", authentication, async (req, res) => {
     return;
   }
 
-  // Get only the most recent ticks equal to the total validator count
+  // only the most recent ticks (no older than 30min as we are returning latest latency metrics) equal to the total validator count (to check how much is the latency from each validator - then we group same locations and return best latency)
   const validatorCount = await prismaClient.validator.count();
-  const ticks = await prismaClient.websiteTick.findMany({
+  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+  const recentTicks = await prismaClient.websiteTick.findMany({
     where: {
       websiteId,
+      createdAt: {
+        gte: thirtyMinutesAgo,
+      },
     },
     orderBy: {
       time: "desc",
     },
-    take: validatorCount,
     include: {
       validator: true,
     },
   });
+  const latestTickPerValidator = new Map<string, typeof recentTicks[0]>();
+  for (const tick of recentTicks) {
+    if (!latestTickPerValidator.has(tick.validatorId)) {
+      latestTickPerValidator.set(tick.validatorId, tick);
+    }
+  }
 
+  const ticks = Array.from(latestTickPerValidator.values());
   const regionalData: Record<string, { latencies: number[], statuses: string[] }> = {};
   for (const tick of ticks) {
     const region = tick.validator.location;
@@ -106,7 +116,7 @@ app.get("/api/v1/website/:id/latency", authentication, async (req, res) => {
 
   const result = Object.entries(regionalData).map(([region, data]) => {
     const minLatency = Math.min(...data.latencies);
-    
+
     const goodCount = data.statuses.filter(s => s === "Good" || s.toLowerCase() === "up").length;
     const isUp = goodCount >= data.statuses.length / 2;
 

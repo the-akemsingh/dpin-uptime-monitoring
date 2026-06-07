@@ -7,13 +7,13 @@ export function HeroSection() {
         <div className="mb-8 flex justify-center">
           <StatusBadge />
         </div>
-        <h1 className="text-[3.5rem] leading-[1.1] font-extrabold tracking-tight text-white lg:text-[4.5rem]">
+        <h1 className="text-[3.5rem] leading-[1.1] font-extrabold tracking-tight text-zinc-900 dark:text-white lg:text-[4.5rem] transition-colors duration-300">
           Decentralized Uptime Monitoring for{" "}
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-[#3b82f6]">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-500 dark:from-blue-400 to-blue-700 dark:to-[#3b82f6]">
             Modern Infrastructure
           </span>
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-[1.1rem] leading-relaxed text-zinc-400 font-medium">
+        <p className="mx-auto mt-6 max-w-2xl text-[1.1rem] leading-relaxed text-zinc-500 dark:text-zinc-400 font-medium">
           Ensure 100% reliability. Our global network of decentralized validators
           monitors your endpoints from every corner of the internet, eliminating false
           positives and single points of failure.

@@ -186,22 +186,22 @@ export default function Home() {
 
   return (
     <DashboardLayout isLoggedIn={!!token}>
-      <div className=" flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-zinc-800 pb-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-zinc-200 dark:border-zinc-800 pb-6 transition-colors duration-300">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-white">Your Websites</h2>
-          <p className="mt-1 text-sm text-zinc-400">Monitor your web properties in real-time.</p>
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white transition-colors duration-300">Your Websites</h2>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Monitor your web properties in real-time.</p>
         </div>
 
         {token ? (
           <div className="flex w-full gap-3 md:w-auto relative group">
             <div className="absolute -inset-0.5 bg-linear-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-500"></div>
-            <div className="relative flex w-full gap-2 rounded-xl bg-[#0a0a0a] p-1 border border-zinc-800">
+            <div className="relative flex w-full gap-2 rounded-xl bg-gray-50 dark:bg-[#0a0a0a] p-1 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full rounded-lg border-0 bg-transparent px-4 py-2.5 text-sm text-white outline-none placeholder:text-zinc-500 md:w-80 focus:bg-[#111]"
+                className="w-full rounded-lg border-0 bg-transparent px-4 py-2.5 text-sm text-zinc-900 dark:text-white outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500 md:w-80 focus:bg-zinc-100 dark:focus:bg-[#111] transition-colors duration-300"
               />
               <button
                 type="button"
@@ -217,29 +217,29 @@ export default function Home() {
       </div>
 
       {!token ? (
-        <div className="rounded-2xl border border-dashed border-zinc-800 bg-[#0a0a0a] p-12 text-center text-zinc-400 shadow-inner">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#111] border border-zinc-800">
+        <div className="rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-gray-50 dark:bg-[#0a0a0a] p-12 text-center text-zinc-500 dark:text-zinc-400 shadow-inner transition-colors duration-300">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-[#111] border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
             <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
           </div>
-          <h3 className="mt-2 text-lg font-semibold text-white">Sign in required</h3>
+          <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-white transition-colors duration-300">Sign in required</h3>
           <p className="mt-1">Please login from the navbar to view and manage your websites.</p>
         </div>
       ) : isLoading ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-800 border-t-blue-500"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 dark:border-zinc-800 border-t-blue-500 transition-colors duration-300"></div>
           <p className="mt-4 text-sm font-medium text-zinc-500">Loading your websites...</p>
         </div>
       ) : websites.length === 0 ? (
-        <div className="relative rounded-2xl border border-zinc-800 bg-[#111] p-12 text-center shadow-lg">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 shadow-sm">
+        <div className="relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gray-50 dark:bg-[#111] p-12 text-center shadow-lg transition-colors duration-300">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors duration-300">
             <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="mt-4 text-xl font-bold text-white">No websites added yet</h3>
-          <p className="mt-2 text-zinc-400">Get started by adding your first website above to begin monitoring.</p>
+          <h3 className="mt-4 text-xl font-bold text-zinc-900 dark:text-white transition-colors duration-300">No websites added yet</h3>
+          <p className="mt-2 text-zinc-500 dark:text-zinc-400">Get started by adding your first website above to begin monitoring.</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
