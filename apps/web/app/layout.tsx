@@ -16,7 +16,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pingsy.akemnoorsingh.xyz"),
   title: {
-    default: "Pingsy — Real-time Website Uptime Monitoring",
+    default: "Pingsy - Real-time Website Uptime Monitoring",
     template: "%s | Pingsy",
   },
   description:
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Pingsy",
-    title: "Pingsy — Real-time Website Uptime Monitoring",
+    title: "Pingsy - Real-time Website Uptime Monitoring",
     description:
       "Monitor your websites 24/7. Get instant alerts when downtime is detected. Fast, reliable, and decentralized.",
     images: [
@@ -43,13 +43,13 @@ export const metadata: Metadata = {
         url: "https://pingsy.akemnoorsingh.xyz/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Pingsy — Real-time Website Uptime Monitoring",
+        alt: "Pingsy - Real-time Website Uptime Monitoring",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pingsy — Real-time Website Uptime Monitoring",
+    title: "Pingsy - Real-time Website Uptime Monitoring",
     description:
       "Monitor your websites 24/7. Get instant alerts when downtime is detected.",
     images: ["/og-image.png"],

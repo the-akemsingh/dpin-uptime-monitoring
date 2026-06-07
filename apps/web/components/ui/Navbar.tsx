@@ -61,10 +61,7 @@ export default function Navbar() {
         <header className="fixed inset-x-0 top-4 z-50 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto flex h-16 w-full items-center justify-between rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-[#0a0a0a]/40 px-5 backdrop-blur-xl shadow-lg dark:shadow-2xl transition-colors duration-300">
                 <div className="flex items-center gap-2">
-                    <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-3H9v3H7v-8h10v8h-2v-3h-2v3h-2z" />
-                    </svg>
-                    <h1 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">DPIN Uptime</h1>
+                    <h1 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">Pingsy</h1>
                 </div>
 
                 {user ? (
