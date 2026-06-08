@@ -99,7 +99,7 @@ export function WebsiteCard({ id, url, statusBuckets, onDelete }: WebsiteCardPro
 
       </div>
 
-      {latencyData.length > 0 && (
+      {latencyData.length > 0 ? (
         <div className="mt-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gray-50 dark:bg-[#0a0a0a] p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 flex flex-col gap-4">
           <div className="w-full">
             <div className="grid grid-cols-3 items-center gap-10 border-b border-zinc-200 dark:border-zinc-800/80 px-2 pb-3 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
@@ -122,6 +122,13 @@ export function WebsiteCard({ id, url, statusBuckets, onDelete }: WebsiteCardPro
               ))}
             </div>
           </div>
+        </div>
+      ) : (
+        <div className="mt-5 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-[#0c0c0c]/50 p-4 shadow-inner flex flex-col items-center justify-center gap-2 min-w-[280px] text-zinc-400 dark:text-zinc-500 text-xs transition-colors duration-300">
+          <svg className="h-5 w-5 text-zinc-400 dark:text-zinc-500 animate-pulse" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+          <span className="font-medium">No data available</span>
         </div>
       )}
     </div>

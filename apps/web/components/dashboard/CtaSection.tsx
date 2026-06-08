@@ -13,7 +13,7 @@ export function CtaSection() {
           </p>
           <div className="mt-10 flex justify-center">
              <button
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight / 2, behavior: "smooth" })}
+              onClick={() => window.dispatchEvent(new Event("trigger-login-modal"))}
               className="rounded-lg bg-[#3b82f6] px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-blue-600 focus:outline-hidden shadow-[0_0_40px_rgba(59,130,246,0.3)] cursor-pointer"
             >
               Add your first website

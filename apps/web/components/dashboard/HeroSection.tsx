@@ -20,8 +20,8 @@ export function HeroSection() {
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row ">
           <button
-            onClick={() => window.scrollTo({ top: document.body.scrollHeight / 2, behavior: "smooth" })}
-            className="flex items-center gap-2 rounded-lg bg-[#3b82f6] px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-blue-600 focus:outline-hidden shadow-[0_0_80px_rgba(59,630,546,0.35)] cursor-pointer"
+            onClick={() => window.dispatchEvent(new Event("trigger-login-modal"))}
+            className="flex items-center gap-2 rounded-lg bg-[#3b82f6] px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-blue-600 focus:outline-hidden shadow-[0_0_80px_rgba(59,130,246,0.35)] cursor-pointer"
           >
             <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />

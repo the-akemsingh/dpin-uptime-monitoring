@@ -2,6 +2,7 @@ import { Keypair } from "@solana/web3.js";
 import nacl from "tweetnacl";
 import nacl_util from "tweetnacl-util";
 import "dotenv/config";
+import bs58 from "bs58";
 
 export interface ISignUpRequestResponse {
   validatorId: string;
@@ -9,8 +10,8 @@ export interface ISignUpRequestResponse {
 }
 
 export interface IValidationRequest {
-  callbackId:string;
-  websiteUrl:string;
+  callbackId: string;
+  websiteUrl: string;
 }
 
 type IncomingMessageValidator =
@@ -24,9 +25,13 @@ const CALLBACKS: {
 } = {};
 
 async function main() {
+
   const keyPair = Keypair.fromSecretKey(
-    Uint8Array.from(JSON.parse(process.env.PRIVATE_KEY as string)),
+    bs58.decode(process.env.PRIVATE_KEY as string)
   );
+  // const keyPair = Keypair.fromSecretKey(
+  //   Uint8Array.from(JSON.parse(process.env.PRIVATE_KEY as string)),
+  // );
 
   const ws = new WebSocket(process.env.WS_URL as string);
 
@@ -121,4 +126,4 @@ async function SignMessageHandler(message: string, keypair: Keypair) {
 
 main();
 
-setInterval(async () => {}, 10000);
+setInterval(async () => { }, 10000);

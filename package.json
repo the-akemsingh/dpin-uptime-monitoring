@@ -1,5 +1,5 @@
 {
-  "name": "dpin-uptime",
+  "name": "pingsy",
   "private": true,
   "scripts": {
     "build": "turbo run build",

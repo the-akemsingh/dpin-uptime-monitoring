@@ -4,7 +4,7 @@ A decentralized physical infrastructure network (DePIN) for distributed uptime m
 
 ## 📖 What it is
 
-The DPin Uptime project is a robust, decentralized alternative to traditional uptime monitoring tools (like Pingdom or Uptime Robot). Instead of relying on centralized servers, it uses a network of independent "validators" to perform continuous health checks (`WebsiteTick`) on registered target URLs. This ensures high reliability, bypasses regional censorship, and provides true global latency metrics.
+The DPin Uptime  is a robust, decentralized alternative to traditional uptime monitoring tools (like Pingdom or Uptime Robot). Instead of relying on centralized servers, it uses a network of independent "validators" to perform continuous health checks (`WebsiteTick`) on registered target URLs. This ensures high reliability, bypasses regional censorship, and provides true global latency metrics.
 
 ## ⚙️ Architecture
 

@@ -1,6 +1,10 @@
 import { ReactNode } from "react";
 import { HeroSection } from "./HeroSection";
 import { FeaturesGrid } from "./FeaturesGrid";
+import { HowItWorks } from "./HowItWorks";
+import { ValidatorEconomy } from "./ValidatorEconomy";
+import { BecomeValidator } from "./BecomeValidator";
+import { ValidatorSetup } from "./ValidatorSetup";
 import { CtaSection } from "./CtaSection";
 import { Footer } from "./Footer";
 import Navbar from "../ui/Navbar";
@@ -24,6 +28,10 @@ export function DashboardLayout({ children, isLoggedIn = false }: DashboardLayou
                     <>
                         <HeroSection />
                         <FeaturesGrid />
+                        <HowItWorks />
+                        <ValidatorEconomy />
+                        <BecomeValidator />
+                        <ValidatorSetup />
                     </>
                 )}
 
@@ -41,6 +49,9 @@ export function DashboardLayout({ children, isLoggedIn = false }: DashboardLayou
                 {!isLoggedIn && <CtaSection />}
             </div>
             <Footer />
+
+            {/* Bottom window fade-in gradient overlay matching active theme (black / white) */}
+            <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white dark:from-black to-transparent z-40 animate-in fade-in duration-1000" />
         </main>
     );
 }
