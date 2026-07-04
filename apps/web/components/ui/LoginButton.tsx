@@ -26,7 +26,7 @@ export default function GoogleSignupButton({
       }
 
       const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/google",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/google`,
         {
           token: googleToken,
         }

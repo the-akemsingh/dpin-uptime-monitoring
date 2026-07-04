@@ -33,7 +33,7 @@ export function WebsiteCard({ id, url, statusBuckets, onDelete }: WebsiteCardPro
       const token = localStorage.getItem("token");
       if (!token) return;
       try {
-        const response = await fetch(`http://localhost:8080/api/v1/website/${id}/latency`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/website/${id}/latency`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {

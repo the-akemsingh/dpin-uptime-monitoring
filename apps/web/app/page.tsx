@@ -83,7 +83,7 @@ export default function Home() {
       setIsLoading(true);
     }
     try {
-      const response = await fetch("http://localhost:8080/api/v1/websites", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/websites`, {
         headers: {
           Authorization: `Bearer ${activeToken}`,
         },
@@ -145,7 +145,7 @@ export default function Home() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:8080/api/v1/website", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/website`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -170,7 +170,7 @@ export default function Home() {
       return;
     }
 
-    const response = await fetch(`http://localhost:8080/api/v1/website/${websiteId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/website/${websiteId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
