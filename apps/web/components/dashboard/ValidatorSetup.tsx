@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useScrollReveal } from "../../hooks/useScrollReveal";
+
 
 const setupSteps = [
   {
@@ -107,20 +109,22 @@ function CopyButton({ text }: { text: string }) {
 export function ValidatorSetup() {
   const [activeStep, setActiveStep] = useState(0);
   const current = setupSteps[activeStep]!;
+  const headerRef = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
+  const panelRef  = useScrollReveal<HTMLDivElement>({ threshold: 0.05 });
   const isKeyStep = activeStep === 3; // Step 4: Phantom private key
 
   return (
     <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mx-auto max-w-2xl text-center mb-16">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-800/50 bg-blue-50 dark:bg-blue-900/20 px-4 py-1.5 text-sm font-semibold text-blue-600 dark:text-blue-400">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div ref={headerRef} className="reveal mx-auto max-w-2xl text-center mb-16">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#111] px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 shadow-sm">
+            <svg className="h-3.5 w-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
             Developer Setup
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-4xl transition-colors duration-300">
+          <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-4xl transition-colors duration-300">
             Validator Setup Guide
           </h2>
           <p className="mt-4 text-lg leading-8 text-zinc-500 dark:text-zinc-400">
@@ -129,7 +133,7 @@ export function ValidatorSetup() {
         </div>
 
         {/* Interactive code walkthrough */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div ref={panelRef} className="reveal grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Step selector sidebar */}
           <div className="lg:col-span-1 flex flex-col gap-2">
             {setupSteps.map((s, i) => (

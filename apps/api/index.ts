@@ -6,7 +6,12 @@ import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 const app = express();
 
-app.use(cors());
+app.use(cors(
+  {
+    origin: "http://localhost:3000",
+    credentials: true,
+  }
+));
 app.use(express.json());
 
 app.get("/api/v1/health", async (req, res) => {

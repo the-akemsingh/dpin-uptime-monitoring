@@ -34,7 +34,6 @@ async function main() {
   // );
 
   const ws = new WebSocket(process.env.WS_URL as string);
-
   ws.onmessage = async (event) => {
     const message: IncomingMessageValidator = JSON.parse(event.data);
 
@@ -47,6 +46,7 @@ async function main() {
     }
   };
   ws.onopen = async () => {
+    console.log("connected to hub")
     const callbackId = crypto.randomUUID();
     CALLBACKS[callbackId] = (data: ISignUpRequestResponse) => {
       validatorId = data.validatorId;
@@ -56,6 +56,7 @@ async function main() {
       `Signup request for ${callbackId} - ${keyPair.publicKey}`,
       keyPair,
     );
+    console.log("sending signup msg")
     ws.send(
       JSON.stringify({
         type: "signup",
@@ -68,7 +69,15 @@ async function main() {
         },
       }),
     );
+    console.log("sent signup msg")
   };
+  ws.onerror = (err) => {
+  console.error("WebSocket error:", err);
+};
+
+ws.onclose = (event) => {
+  console.log("WebSocket closed:", event.code, event.reason);
+};
 }
 
 async function ValidateWebsiteHandler(

@@ -16,12 +16,15 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, isLoggedIn = false }: DashboardLayoutProps) {
     return (
-        <main className="relative min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-zinc-700 dark:text-zinc-300 font-sans selection:bg-blue-500/30 selection:text-blue-200 transition-colors duration-300">
-            {/* Grid Pattern Background */}
-            <div className="absolute inset-0 z-0 h-200 w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px]"></div>
+        <main className="relative min-h-screen bg-gray-50 dark:bg-[#09090b] text-zinc-700 dark:text-zinc-300 font-sans selection:bg-blue-500/30 selection:text-blue-200 transition-colors duration-300 overflow-x-hidden">
+
+            {/* Fine grid pattern background */}
+            <div className="absolute inset-0 z-0 pointer-events-none h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px]" />
+
+            {/* Radial fade-out at center so grid doesn't compete with content */}
+            <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,transparent_0%,rgba(249,250,251,0.9)_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,transparent_0%,rgba(9,9,11,0.9)_70%)]" />
 
             <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-
                 <Navbar />
 
                 {!isLoggedIn && (
@@ -35,23 +38,22 @@ export function DashboardLayout({ children, isLoggedIn = false }: DashboardLayou
                     </>
                 )}
 
-                {/* User's Application Dashboard Logic */}
+                {/* User Dashboard */}
                 {isLoggedIn && children && (
                     <div className="pt-32 w-full min-h-screen relative">
-                        {/* <div className="absolute -inset-1 rounded-3xl bg-linear-to-r from-blue-500/10 to-purple-500/10 blur-xl opacity-50"></div> */}
-                        <div className="relative rounded-2xl border border-zinc-200 dark:border-zinc-800/60 bg-white dark:bg-[#111] p-8 shadow-lg dark:shadow-2xl backdrop-blur-xl transition-colors duration-300">
+                        <div className="relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#111] p-8 shadow-xl dark:shadow-2xl transition-colors duration-300">
                             {children}
                         </div>
                     </div>
                 )}
 
-                {/* <Integrations /> */}
                 {!isLoggedIn && <CtaSection />}
             </div>
+
             <Footer />
 
-            {/* Bottom window fade-in gradient overlay matching active theme (black / white) */}
-            <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white dark:from-black to-transparent z-40 animate-in fade-in duration-1000" />
+            {/* Bottom fade gradient */}
+            <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-gray-50 dark:from-[#09090b] to-transparent z-40 transition-colors duration-300" />
         </main>
     );
 }
